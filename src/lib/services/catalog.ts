@@ -41,6 +41,10 @@ export function getProductBySlug(slug: string): Product | undefined {
   return products.find((product) => product.slug === slug);
 }
 
+export function getProductById(id: string): Product | undefined {
+  return products.find((product) => product.id === id);
+}
+
 export function listCategories(): Array<Category | "All"> {
   const all = new Set<Category>();
   products.forEach((product) => all.add(product.category));
