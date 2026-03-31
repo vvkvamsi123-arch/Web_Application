@@ -1,16 +1,18 @@
-export type Category = "Electronics" | "Home" | "Lifestyle" | "Fitness";
-
 export type Product = {
   id: string;
   slug: string;
   name: string;
-  category: Category;
+  category: string;
+  categoryId: string;
+  subcategoryId: string;
   price: number;
   rating: number;
   imageUrl: string;
   shortDescription: string;
   description: string;
   specs: string[];
+  brand: string;
+  stockStatus: "in-stock" | "low-stock" | "out-of-stock";
 };
 
 // ---------------------------------------------------------------------------

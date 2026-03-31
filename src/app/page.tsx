@@ -2,10 +2,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { Container } from "@/components/Container";
 import { ProductCard } from "@/components/ProductCard";
-import { listProducts } from "@/lib/services/catalog";
+import { CategoryCard } from "@/components/CategoryCard";
+import { listProducts, listCategories } from "@/lib/services/catalog";
 
 export default function HomePage() {
-  const featured = listProducts().slice(0, 4);
+  const featured = listProducts().slice(0, 8);
+  const categories = listCategories();
 
   return (
     <>
@@ -24,16 +26,16 @@ export default function HomePage() {
             </p>
             <div className="flex flex-wrap gap-3">
               <Link
-                href="/products"
+                href="/categories"
                 className="rounded-xl bg-amber-500 px-5 py-3 font-semibold text-white transition-colors hover:bg-amber-600"
               >
-                Shop Products
+                Browse Categories
               </Link>
               <Link
-                href="/about"
+                href="/products"
                 className="rounded-xl border border-slate-300 bg-white px-5 py-3 font-semibold text-slate-700 transition-colors hover:border-slate-400"
               >
-                Learn More
+                Shop All Products
               </Link>
             </div>
           </div>
@@ -50,11 +52,28 @@ export default function HomePage() {
         </Container>
       </section>
 
+      {/* Category Grid */}
+      <section className="pb-10">
+        <Container>
+          <div className="mb-6 flex items-center justify-between">
+            <h2 className="text-2xl font-extrabold text-slate-900">Shop by Category</h2>
+            <Link href="/categories" className="text-sm font-semibold text-amber-700 hover:text-amber-800">
+              View all categories
+            </Link>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+            {categories.map((cat) => (
+              <CategoryCard key={cat.id} category={cat} />
+            ))}
+          </div>
+        </Container>
+      </section>
+
       <section className="pb-8">
         <Container>
           <div className="mb-6 flex items-center justify-between">
             <h2 className="text-2xl font-extrabold text-slate-900">Featured Products</h2>
-            <Link href="/products" className="text-sm font-semibold text-teal-700 hover:text-teal-800">
+            <Link href="/products" className="text-sm font-semibold text-amber-700 hover:text-amber-800">
               View all
             </Link>
           </div>

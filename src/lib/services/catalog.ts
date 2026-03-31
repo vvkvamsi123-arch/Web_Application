@@ -1,52 +1,64 @@
 import { products } from "@/lib/data/products";
-import { Category, Product } from "@/lib/types";
+import { Product } from "@/lib/types";
+import {
+  categories,
+  subcategories,
+  getCategoryBySlug,
+  getSubcategoryBySlug,
+  getSubcategoriesForCategory,
+  type CategoryDef,
+  type SubcategoryDef,
+} from "@/lib/data/categories";
 
 export type ProductFilters = {
-  category?: Category | "All";
+  categoryId?: string;
+  subcategoryId?: string;
   query?: string;
   sort?: "featured" | "price-asc" | "price-desc";
 };
 
-// This module is the UI's data boundary and can later call catalog microservices.
 export function listProducts(filters: ProductFilters = {}): Product[] {
-  const category = filters.category ?? "All";
   const query = (filters.query ?? "").trim().toLowerCase();
   const sort = filters.sort ?? "featured";
 
   let result = [...products];
 
-  if (category !== "All") {
-    result = result.filter((product) => product.category === category);
+  if (filters.categoryId) {
+    result = result.filter((p) => p.categoryId === filters.categoryId);
+  }
+
+  if (filters.subcategoryId) {
+    result = result.filter((p) => p.subcategoryId === filters.subcategoryId);
   }
 
   if (query) {
-    result = result.filter((product) => {
-      const haystack = `${product.name} ${product.shortDescription}`.toLowerCase();
+    result = result.filter((p) => {
+      const haystack = `${p.name} ${p.shortDescription} ${p.brand}`.toLowerCase();
       return haystack.includes(query);
     });
   }
 
-  if (sort === "price-asc") {
-    result.sort((a, b) => a.price - b.price);
-  }
-
-  if (sort === "price-desc") {
-    result.sort((a, b) => b.price - a.price);
-  }
+  if (sort === "price-asc") result.sort((a, b) => a.price - b.price);
+  if (sort === "price-desc") result.sort((a, b) => b.price - a.price);
 
   return result;
 }
 
 export function getProductBySlug(slug: string): Product | undefined {
-  return products.find((product) => product.slug === slug);
+  return products.find((p) => p.slug === slug);
 }
 
 export function getProductById(id: string): Product | undefined {
-  return products.find((product) => product.id === id);
+  return products.find((p) => p.id === id);
 }
 
-export function listCategories(): Array<Category | "All"> {
-  const all = new Set<Category>();
-  products.forEach((product) => all.add(product.category));
-  return ["All", ...Array.from(all)];
+export function listCategories(): CategoryDef[] {
+  return categories;
 }
+
+export function listSubcategories(categoryId?: string): SubcategoryDef[] {
+  if (categoryId) return getSubcategoriesForCategory(categoryId);
+  return subcategories;
+}
+
+export { getCategoryBySlug, getSubcategoryBySlug };

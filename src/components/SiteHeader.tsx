@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 
 const navLinks = [
+  { href: "/categories", label: "Categories" },
   { href: "/products", label: "Shop" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
