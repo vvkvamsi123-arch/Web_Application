@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Container } from "@/components/Container";
 import { ProductCard } from "@/components/ProductCard";
 import { listProducts } from "@/lib/services/catalog";
@@ -36,11 +37,14 @@ export default function HomePage() {
               </Link>
             </div>
           </div>
-          <div className="rounded-3xl border border-amber-100 bg-white p-3 shadow-xl">
-            <img
+          <div className="relative min-h-[320px] rounded-3xl border border-amber-100 bg-white p-3 shadow-xl">
+            <Image
               src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=1200&q=80"
               alt="Curated home and lifestyle items"
-              className="h-full min-h-[320px] w-full rounded-2xl object-cover"
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              priority
+              className="rounded-2xl object-cover"
             />
           </div>
         </Container>

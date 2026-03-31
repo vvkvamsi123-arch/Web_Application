@@ -1,7 +1,10 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/Container";
 import { getProductBySlug } from "@/lib/services/catalog";
+import { AddToCartButton } from "@/components/cart/AddToCartButton";
+import { WishlistButton } from "@/components/cart/WishlistButton";
 
 type ProductDetailPageProps = {
   params: {
@@ -23,8 +26,15 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
         </Link>
 
         <div className="mt-4 grid gap-8 rounded-2xl border border-amber-100 bg-white p-5 shadow-sm lg:grid-cols-2 lg:p-8">
-          <div className="overflow-hidden rounded-2xl bg-slate-100">
-            <img src={product.imageUrl} alt={product.name} className="h-full w-full object-cover" />
+          <div className="relative aspect-square overflow-hidden rounded-2xl bg-slate-100">
+            <Image
+              src={product.imageUrl}
+              alt={product.name}
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              priority
+              className="object-cover"
+            />
           </div>
 
           <div className="space-y-5">
@@ -42,12 +52,13 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
               </ul>
             </div>
 
-            <button
-              type="button"
-              className="rounded-xl bg-amber-500 px-5 py-3 font-semibold text-white transition-colors hover:bg-amber-600"
-            >
-              Add to cart
-            </button>
+            <div className="flex items-center gap-3">
+              <AddToCartButton
+                productId={product.id}
+                className="rounded-xl bg-amber-500 px-5 py-3 font-semibold text-white transition-colors hover:bg-amber-600 disabled:opacity-60"
+              />
+              <WishlistButton productId={product.id} />
+            </div>
           </div>
         </div>
       </Container>

@@ -1,50 +1,78 @@
-# HarborCart - Phase 1 Static E-commerce Frontend
+# HarborCart - Phase 2 Full-Stack E-commerce
 
-This project is a modern static e-commerce web application built with Next.js, React, TypeScript, and Tailwind CSS.
+HarborCart is a Next.js App Router e-commerce project with Auth.js authentication,
+Prisma persistence, and functional cart/wishlist APIs.
 
-## Phase 1 Scope
+## Phase 2 Scope
 
-- Home page with hero, featured products, and promo section
-- Product listing page with category and sort links (client-side/static)
-- Product detail page
-- Cart page with static frontend totals
-- About and Contact pages
-- Service abstraction layer for data access
+- User registration and login (credentials provider)
+- Session-based protected routes (`/cart`, `/wishlist`, `/api/cart`, `/api/wishlist`)
+- Persistent cart and wishlist storage with Prisma + SQLite
+- Product list and product detail pages with working add-to-cart and wishlist actions
+- Functional cart and wishlist pages backed by live API data
+- Service-layer architecture ready for future microservice migration
 
-## Microservice-Ready Design
+## Tech Stack
 
-The UI does not read data directly from page components. Instead, data access is routed through service modules:
-
-- `src/lib/services/catalog.ts`
-- `src/lib/services/cart.ts`
-
-In future phases, these modules can be replaced by API calls to catalog, cart, and order microservices without major UI rewrites.
+- Next.js 14 (App Router)
+- TypeScript + Tailwind CSS
+- Auth.js (next-auth v5 beta)
+- Prisma 7 + SQLite (local development)
+- SWR for client-side API state sync
+- Zod for API validation
 
 ## Prerequisites
 
-Install these tools first:
+- Node.js 20+ (LTS recommended)
+- npm 10+
 
-- Node.js LTS (v20 or v22)
-- npm (included with Node.js)
+## Local Setup
 
-## Run Locally
+1. Install dependencies:
 
 ```bash
 npm install
+```
+
+2. Create env file from example:
+
+```bash
+copy .env.example .env.local
+```
+
+3. Generate Prisma client and create/update local DB schema:
+
+```bash
+npx prisma generate
+npx prisma db push
+```
+
+4. Start the app:
+
+```bash
 npm run dev
 ```
 
-Then open:
+Open http://localhost:3000.
 
-- http://localhost:3000
-
-## Build
+## Useful Commands
 
 ```bash
+npm run dev
 npm run build
 npm run start
+npm run lint
+```
+
+## Default Local Database
+
+Local development uses SQLite with:
+
+```env
+DATABASE_URL="file:./dev.db"
 ```
 
 ## Notes
 
-This repository currently contains static data and no backend implementation by design.
+- Auth secrets and local DB settings belong in `.env.local` only.
+- OAuth providers are scaffolded but optional for this phase.

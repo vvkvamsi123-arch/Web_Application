@@ -1,19 +1,30 @@
 "use client";
 
 import { useWishlist } from "@/lib/hooks/useWishlist";
+import { usePathname, useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 type Props = {
   productId: string;
 };
 
 export function WishlistButton({ productId }: Props) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const { status } = useSession();
   const { isWishlisted, addItem, removeItem, wishlist, isLoading } =
-    useWishlist();
+    useWishlist(status === "authenticated");
 
   const wishlisted = isWishlisted(productId);
   const item = wishlist?.items.find((i) => i.productId === productId);
 
   async function handleToggle() {
+    if (status !== "authenticated") {
+      const callback = pathname || "/products";
+      router.push(`/login?callbackUrl=${encodeURIComponent(callback)}`);
+      return;
+    }
+
     if (wishlisted && item) {
       await removeItem(item.id);
     } else {
@@ -24,7 +35,7 @@ export function WishlistButton({ productId }: Props) {
   return (
     <button
       onClick={handleToggle}
-      disabled={isLoading}
+      disabled={status === "loading" || isLoading}
       aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
       title={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
       className="rounded-full p-1.5 text-gray-400 hover:text-red-500 transition-colors disabled:opacity-40"

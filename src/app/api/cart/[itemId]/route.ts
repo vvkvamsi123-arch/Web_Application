@@ -27,7 +27,7 @@ export async function PATCH(req: NextRequest, ctx: RouteContext) {
     const body: unknown = await req.json();
     const parsed = updateSchema.safeParse(body);
     if (!parsed.success) {
-      return badRequest(parsed.error.errors[0].message, "VALIDATION_ERROR");
+      return badRequest(parsed.error.issues[0].message, "VALIDATION_ERROR");
     }
 
     const existing = await prisma.cartItem.findUnique({

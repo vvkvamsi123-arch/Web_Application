@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     const parsed = registerSchema.safeParse(body);
 
     if (!parsed.success) {
-      return badRequest(parsed.error.errors[0].message, "VALIDATION_ERROR");
+      return badRequest(parsed.error.issues[0].message, "VALIDATION_ERROR");
     }
 
     const { name, email, password } = parsed.data;

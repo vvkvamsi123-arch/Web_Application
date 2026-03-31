@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
     const body: unknown = await req.json();
     const parsed = addItemSchema.safeParse(body);
     if (!parsed.success) {
-      return badRequest(parsed.error.errors[0].message, "VALIDATION_ERROR");
+      return badRequest(parsed.error.issues[0].message, "VALIDATION_ERROR");
     }
 
     const { productId, quantity } = parsed.data;

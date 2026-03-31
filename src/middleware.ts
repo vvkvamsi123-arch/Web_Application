@@ -1,6 +1,6 @@
-import { auth } from "@/lib/auth/config";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt";
 
 // ---------------------------------------------------------------------------
 // Route protection rules
@@ -24,9 +24,12 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  const session = await auth();
+  const token = await getToken({
+    req,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
 
-  if (!session?.user?.id) {
+  if (!token?.sub) {
     if (isProtectedApi) {
       return NextResponse.json(
         { error: "UNAUTHORIZED", message: "Authentication required." },
