@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { type CategoryDef } from "@/lib/data/categories";
+import { getCategoryPath, type CategoryNode } from "@/lib/data/categories";
 
 type CategoryCardProps = {
-  category: CategoryDef;
+  category: CategoryNode;
   productCount?: number;
+  href?: string;
 };
 
 const categoryIcons: Record<string, string> = {
@@ -19,14 +20,16 @@ const categoryIcons: Record<string, string> = {
   "cat-10": "💊",
 };
 
-export function CategoryCard({ category, productCount }: CategoryCardProps) {
+export function CategoryCard({ category, productCount, href }: CategoryCardProps) {
+  const rootCategory = getCategoryPath(category.id)[0] ?? category;
+
   return (
     <Link
-      href={`/category/${category.slug}`}
+      href={href ?? `/category/${category.slug}`}
       className="group flex flex-col items-center gap-3 rounded-2xl border border-amber-100 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-amber-200 hover:shadow-lg"
     >
       <span className="text-4xl" role="img" aria-hidden="true">
-        {categoryIcons[category.id] ?? "📦"}
+        {categoryIcons[rootCategory.id] ?? "📦"}
       </span>
       <h3 className="text-lg font-bold text-slate-900 group-hover:text-amber-700">
         {category.name}

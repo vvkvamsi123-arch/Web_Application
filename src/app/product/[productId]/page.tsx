@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Container } from "@/components/Container";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { getProductById } from "@/lib/services/catalog";
-import { getCategoryById, getSubcategoryById } from "@/lib/data/categories";
+import { getCategoryPath } from "@/lib/data/categories";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { WishlistButton } from "@/components/cart/WishlistButton";
 
@@ -15,8 +15,10 @@ export default function ProductDetailPage({ params }: Props) {
   const product = getProductById(params.productId);
   if (!product) notFound();
 
-  const category = getCategoryById(product.categoryId);
-  const subcategory = getSubcategoryById(product.subcategoryId);
+  const categoryPath = getCategoryPath(product.leafCategoryId);
+  const category = categoryPath[0];
+  const subcategory = categoryPath.find((node) => node.level === 2);
+  const leafCategoryHref = `/category/${categoryPath.map((node) => node.slug).join("/")}`;
 
   return (
     <section className="py-10 sm:py-12">
@@ -25,12 +27,13 @@ export default function ProductDetailPage({ params }: Props) {
           items={[
             { label: "Home", href: "/" },
             { label: "Categories", href: "/categories" },
-            ...(category
-              ? [{ label: category.name, href: `/category/${category.slug}` }]
-              : []),
-            ...(category && subcategory
-              ? [{ label: subcategory.name, href: `/category/${category.slug}/${subcategory.slug}` }]
-              : []),
+            ...categoryPath.map((node, index) => ({
+              label: node.name,
+              href:
+                index === categoryPath.length - 1
+                  ? leafCategoryHref
+                  : `/category/${categoryPath.slice(0, index + 1).map((item) => item.slug).join("/")}`,
+            })),
             { label: product.name },
           ]}
         />

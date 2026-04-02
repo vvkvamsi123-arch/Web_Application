@@ -2,17 +2,25 @@ import { products } from "@/lib/data/products";
 import { Product } from "@/lib/types";
 import {
   categories,
+  categoryTree,
   subcategories,
   getCategoryBySlug,
+  getCategoryPath,
   getSubcategoryBySlug,
   getSubcategoriesForCategory,
+  isLeafCategory,
+  listChildCategories,
+  listDescendantCategoryIds,
+  resolveCategoryBySlugChain,
   type CategoryDef,
+  type CategoryNode,
   type SubcategoryDef,
 } from "@/lib/data/categories";
 
 export type ProductFilters = {
   categoryId?: string;
   subcategoryId?: string;
+  leafCategoryId?: string;
   query?: string;
   sort?: "featured" | "price-asc" | "price-desc";
 };
@@ -29,6 +37,10 @@ export function listProducts(filters: ProductFilters = {}): Product[] {
 
   if (filters.subcategoryId) {
     result = result.filter((p) => p.subcategoryId === filters.subcategoryId);
+  }
+
+  if (filters.leafCategoryId) {
+    result = result.filter((p) => p.leafCategoryId === filters.leafCategoryId);
   }
 
   if (query) {
@@ -61,4 +73,29 @@ export function listSubcategories(categoryId?: string): SubcategoryDef[] {
   return subcategories;
 }
 
-export { getCategoryBySlug, getSubcategoryBySlug };
+export function listCategoryChildren(parentId: string): CategoryNode[] {
+  return listChildCategories(parentId);
+}
+
+export function countProductsForCategory(categoryId: string): number {
+  const categoryIds = [categoryId, ...listDescendantCategoryIds(categoryId)];
+  const leafIds = categoryIds.filter((id) => isLeafCategory(id));
+
+  if (leafIds.length === 0) {
+    return products.filter((product) => product.categoryId === categoryId).length;
+  }
+
+  return products.filter((product) => leafIds.includes(product.leafCategoryId)).length;
+}
+
+export function getLeafCategories(): CategoryNode[] {
+  return categoryTree.filter((node) => isLeafCategory(node.id));
+}
+
+export {
+  getCategoryBySlug,
+  getCategoryPath,
+  getSubcategoryBySlug,
+  isLeafCategory,
+  resolveCategoryBySlugChain,
+};

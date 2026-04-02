@@ -5,6 +5,7 @@ export type Product = {
   category: string;
   categoryId: string;
   subcategoryId: string;
+  leafCategoryId: string;
   price: number;
   rating: number;
   imageUrl: string;

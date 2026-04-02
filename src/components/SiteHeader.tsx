@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
+import { MegaMenu } from "@/components/MegaMenu";
 
 const navLinks = [
-  { href: "/categories", label: "Categories" },
   { href: "/products", label: "Shop" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
@@ -22,6 +22,9 @@ export function SiteHeader() {
 
         <nav aria-label="Primary navigation">
           <ul className="flex items-center gap-4 text-sm font-semibold text-slate-700 sm:gap-6">
+            <li>
+              <MegaMenu />
+            </li>
             {navLinks.map((item) => (
               <li key={item.href}>
                 <Link className="transition-colors hover:text-amber-600" href={item.href}>
